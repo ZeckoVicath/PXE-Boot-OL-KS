@@ -1,0 +1,32 @@
+yum install xinetd tftp-server httpd dnsmasq  syslinux pykickstart nfs-utils
+mount -t nfs iso001srv.mydomain.tld:/iso /mnt/
+mkdir -p /var/www/html/OracleLinux_7_3/ISO/
+mount -o loop /mnt/OracleLinux_7_3.iso /var/www/html/OracleLinux_7_3/ISO/
+mkdir -p /tftpboot/pxelinux.cfg
+mkdir -p /tftpboot/OracleLinux_7_3
+cd /tftpboot
+cp /usr/share/syslinux/pxelinux.0 ./pxelinux.0
+cp /usr/share/syslinux/vesamenu.c32 ./vesamenu.c32
+cp /var/www/html/OracleLinux_7_3/ISO/images/pxeboot/vmlinuz ./OracleLinux_7_3/
+cp /var/www/html/OracleLinux_7_3/ISO/images/pxeboot/initrd.img ./OracleLinux_7_3/
+nano /tftpboot/pxelinux.cfg/default
+nano /tftpboot/OracleLinux_7_3/template.ks 
+ksvalidator /tftpboot/OracleLinux_7_3/template.ks 
+setsebool -P tftp_anon_write 0
+setsebool -P tftp_home_dir 1
+restorecon -r /tftpboot/
+restorecon -r /var/www/html/
+firewall-cmd --permanent --add-service=tftp
+firewall-cmd --permanent --add-service=dhcp
+firewall-cmd --permanent --add-service=http
+firewall-cmd --reload
+nano /usr/lib/systemd/system/tftp.service 
+nano /etc/dnsmasq.conf 
+systemctl enable xinetd
+systemctl start xinetd
+systemctl enable tftp
+systemctl start tftp
+systemctl enable dnsmasq
+systemctl start dnsmasq
+systemctl enable httpd
+systemctl start httpd

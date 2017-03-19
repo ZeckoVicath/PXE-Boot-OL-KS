@@ -1,0 +1,60 @@
+default vesamenu.c32
+prompt 0
+timeout 300
+ONTIMEOUT local
+
+MENU TITLE PXE Boot Menu
+
+LABEL local
+	MENU LABEL ^Boot local hard drive
+        LOCALBOOT 0
+
+LABEL Install db001srv
+        MENU LABEL Install db001srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_db001srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install db002srv
+        MENU LABEL Install db002srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_db002srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install loadb001srv
+        MENU LABEL Install loadb001srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_loadb001srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install loadb002srv
+        MENU LABEL Install loadb002srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_loadb002srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install queue001srv
+        MENU LABEL Install queue001srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_queue001srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install queue002srv
+        MENU LABEL Install queue002srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_queue002srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install stor001srv
+        MENU LABEL Install stor001srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_stor001srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install stor002srv
+        MENU LABEL Install stor002srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_stor002srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install web001srv
+        MENU LABEL Install web001srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_web001srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
+
+LABEL Install web002srv
+        MENU LABEL Install web002srv
+        kernel OracleLinux_7_3/vmlinuz
+        append ksdevice=eth0 console=tty0 load_ramdisk=1 initrd=OracleLinux_7_3/initrd.img inst.ks=http://10.0.0.250/OracleLinux_7_3/OL73_web002srv.ks inst.repo=http://10.0.0.250/OracleLinux_7_3/ISO/
