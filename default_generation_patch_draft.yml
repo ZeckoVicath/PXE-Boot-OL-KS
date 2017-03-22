@@ -1,0 +1,131 @@
+
+        $isos = ['OracleLinux_7_3'],
+        $ks_names = ['db001srv', 'db002srv', 'loadb001srv', 'loadb002srv', 'queue001srv', 'queue002srv', 'stor001srv', 'stor002srv', 'web001srv', 'web002srv'],
+        $ks_for_all_isos = true,
+        $ks_locations = ['OracleLinux_7_3'],
+        
+        
+        $isos.each |String $iso| {
+          file { ["${iso_mount_path_parent}${iso}/", "${iso_mount_path_parent}${iso}/ISO/"]:
+                          ensure => 'directory',
+                          owner => $owner,
+                          group => $group,
+                          mode => '0755',
+                          require => Package['httpd'],
+          }
+          mount { "${iso_mount_path_parent}${iso}/ISO/":
+                          ensure   => 'mounted',
+                          fstype   => 'iso9660',
+                          atboot   => true,
+                          device   => "${iso_library_mount_path}${iso}.iso",
+                          options  => 'loop',
+                          require => [File["${iso_mount_path_parent}${iso}/ISO/"], Mount["$iso_library_mount_path"],],
+          }
+          file { "/tftpboot/${iso}/":
+                          ensure => 'directory',
+                          owner => $owner,
+                          group => $group,
+                          mode => $foldermode,
+                          require => File['/tftpboot/'],
+          }
+          file { "/tftpboot/${iso}/vmlinuz":
+                          ensure => 'file',
+                          source => "${iso_mount_path_parent}${iso}/ISO/images/pxeboot/vmlinuz",
+                          mode => $filemode,
+                          require => [File['/tftpboot/'], Mount["${iso_mount_path_parent}${iso}/ISO/"],],
+          }
+          file { "/tftpboot/${iso}/initrd.img":
+                          ensure => 'file',
+                          source => "${iso_mount_path_parent}${iso}/ISO/images/pxeboot/initrd.img",
+                          mode => $filemode,
+                          require => [File['/tftpboot/'], Mount["${iso_mount_path_parent}${iso}/ISO/"],],
+          }
+          file { "$pxefile":
+              ensure => 'file',
+              source => 'puppet:///modules/pxe_server/default',
+              owner => $owner,
+              group => $group,
+              mode => $filemode,
+              require => File['/tftpboot/'],
+          }
+          if $ks_for_all_isos {
+            $ks_names.each |String $ks_name| {
+                file { "${iso_mount_path_parent}${iso}/${ks_name}.ks":
+                            ensure => 'file',
+                            source => "${kickstart_source}${iso}/${ks_name}.ks",
+                            owner => $owner,
+                            group => $group,
+                            mode => $filemode,
+                            require => File["$iso_mount_path_parent"],
+                }
+                file_line { "${pxefile}_${iso}_${ks_name}_LABEL":
+                        ensure => present,
+                        path => "$pxefile",
+                        line => "LABEL",
+                }
+                file_line { "${pxefile}_${iso}_${ks_name}_ENTRY":
+                        ensure => present,
+                        path => "$pxefile",
+                        line => "ENTRY",
+                }
+                file_line { "${pxefile}_${iso}_${ks_name}_KERNEL":
+                        ensure => present,
+                        path => "$pxefile",
+                        line => "KERNEL",
+                }
+                file_line { "${pxefile}_${iso}_${ks_name}_ENV":
+                        ensure => present,
+                        path => "$pxefile",
+                        line => "ENV",
+                }
+                file_line { "${pxefile}_${iso}_${ks_name}_BLANK":
+                        ensure => present,
+                        path => "$pxefile",
+                        line => "\n",
+                }
+            }
+          }
+        }
+        if ! $ks_for_all_isos {
+            $ks_locations.each |String $ks_location| {
+                
+                # Create KS file
+                $ks_names.each |String $ks_name| {
+                    file { "${iso_mount_path_parent}${ks_location}/${ks_name}.ks":
+                                    ensure => 'file',
+                                    source => "${kickstart_source}${ks_location}/${ks_name}.ks",
+                                    owner => $owner,
+                                    group => $group,
+                                    mode => $filemode,
+                                    require => File["$iso_mount_path_parent"],
+                    }
+                    file_line { "${pxefile}_${ks_location}_${ks_name}_LABEL":
+                            ensure => present,
+                            path => "$pxefile",
+                            line => "LABEL",
+                    }
+                    file_line { "${pxefile}_${ks_location}_${ks_name}_ENTRY":
+                            ensure => present,
+                            path => "$pxefile",
+                            line => "ENTRY",
+                    }
+                    file_line { "${pxefile}_${ks_location}_${ks_name}_KERNEL":
+                            ensure => present,
+                            path => "$pxefile",
+                            line => "KERNEL",
+                    }
+                    file_line { "${pxefile}_${ks_location}_${ks_name}_ENV":
+                            ensure => present,
+                            path => "$pxefile",
+                            line => "ENV",
+                    }
+                    file_line { "${pxefile}_${ks_location}_${ks_name}_BLANK":
+                            ensure => present,
+                            path => "$pxefile",
+                            line => "\n",
+                    }
+                }
+            }
+        }
+        
+        
